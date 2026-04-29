@@ -1,16 +1,13 @@
-FROM python:3.11-slim
+FROM node:18-slim
 
 RUN apt-get update && apt-get install -y \
-    curl ffmpeg nodejs npm unzip \
+    python3 python3-pip ffmpeg \
+    && pip3 install -U yt-dlp --break-system-packages \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install -U yt-dlp
-
 WORKDIR /app
-COPY ytmusic-dl.zip .
-RUN unzip ytmusic-dl.zip && rm ytmusic-dl.zip
-
-RUN if [ -f package.json ]; then npm install; fi
+COPY package*.json ./
+RUN npm install
 
 COPY . .
 
